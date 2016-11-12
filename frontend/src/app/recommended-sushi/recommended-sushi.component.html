@@ -1,0 +1,5 @@
+<md-grid-list cols="4" gutterSize="12px" rowHeight="450px">
+  <md-grid-tile *ngFor="let card of (cards$ | async)">
+    <sushi-card [card]="card"></sushi-card>
+  </md-grid-tile>
+</md-grid-list>

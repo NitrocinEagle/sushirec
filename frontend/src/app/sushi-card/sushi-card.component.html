@@ -1,0 +1,12 @@
+<md-card>
+  <img md-card-image src="{{ card.image }}">
+  <md-card-content>
+    <p style="font-weight: bold" md-line>{{ card.title }}</p>
+    <p md-line>{{ card.description }}</p>
+    <p md-line>{{ card.price }}</p>
+  </md-card-content>
+  <md-card-actions>
+    <button md-button (click)="chooseSushi()">ВЫБРАТЬ</button>
+    <md-checkbox [(ngModel)]="chosen" disabled></md-checkbox>
+  </md-card-actions>
+</md-card>

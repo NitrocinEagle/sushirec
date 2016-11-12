@@ -1,0 +1,13 @@
+/* You can add global styles to this file, and also import other style files */
+@import '~@angular/material/core/theming/all-theme';
+
+@include md-core();
+$sushi-app-primary: md-palette($md-indigo);
+$sushi-app-accent:  md-palette($md-pink, A200, A100, A400);
+$sushi-app-warn:    md-palette($md-red);
+$sushi-app-theme: md-light-theme($sushi-app-primary, $sushi-app-accent, $sushi-app-warn);
+@include angular-material-theme($sushi-app-theme);
+
+body {
+  margin: 0;
+}

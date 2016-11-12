@@ -75,3 +75,6 @@ conf/dev/
 
 # secrets
 conf/common/secret.py
+
+# js
+node_modules
