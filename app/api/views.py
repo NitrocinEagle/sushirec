@@ -30,17 +30,17 @@ class GetRecommendation(BaseAPI):
         response = []
 
         for rec in recommends:
-            # sushi contains a tuple (price, title, descr, img, id)
-            sushi = sushis[rec[0] - 1]
-            # convert tuple to dict
-            sushi = {
-                'price': sushi[0],
-                'title': sushi[1],
-                'description': sushi[2],
-                'image': sushi[3],
-                'sushi_id': sushi[4],
-            }
-            response.append((sushi, rec[1]))
+            if rec[0] not in filter(lambda c: c[0] == int(self.request.GET['user_id']), choices)[0][1]:
+                # sushi contains a tuple (price, title, descr, img, id)
+                sushi = sushis[rec[0] - 1]
+                response.append({
+                    'price': sushi[0],
+                    'title': sushi[1],
+                    'description': sushi[2],
+                    'image': sushi[3],
+                    'sushi_id': sushi[4],
+                    'rec': rec[1],
+                })
 
         return Response({
             'result': 'success',
