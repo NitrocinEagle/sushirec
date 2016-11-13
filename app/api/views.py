@@ -22,11 +22,29 @@ class GetSushi(BaseAPI):
 
 class GetRecommendation(BaseAPI):
     def get_data(self, *args, **kwargs):
-        choices = UserChoices.objects.values_list('user_id', 'choices')
+        choices = UserChoices.objects.scalar('user_id', 'choices')
+        recommends = recommend(choices, int(self.request.GET['user_id']))
+
+        fields = ('price', 'title', 'description', 'image', 'sushi_id',)
+        sushis = Sushi.objects.scalar(*fields).order_by('sushi_id')
+        response = []
+
+        for rec in recommends:
+            # sushi contains a tuple (price, title, descr, img, id)
+            sushi = sushis[rec[0] - 1]
+            # convert tuple to dict
+            sushi = {
+                'price': sushi[0],
+                'title': sushi[1],
+                'description': sushi[2],
+                'image': sushi[3],
+                'sushi_id': sushi[4],
+            }
+            response.append((sushi, rec[1]))
 
         return Response({
             'result': 'success',
-            'data': recommend(choices, int(self.request.GET['user_id']))
+            'data': response
         })
 
 
@@ -38,10 +56,13 @@ class SetUserChoice(BaseAPI):
         data = self.request.data
         choice = data['choice']
         if data.get('user_id'):
-            UserChoices.objects.filter(user_id=data['user_id']).update(add_to_set__choices=[choice])
-            return Response({
-                'user_id': data.get('user_id')
-            })
+            choices = UserChoices.objects.filter(user_id=data['user_id']).scalar('choices').first()
+            if choice not in choices:
+                UserChoices.objects.filter(user_id=data['user_id']).update(add_to_set__choices=[choice])
+                return Response({
+                    'user_id': data.get('user_id')
+                })
+            return Response(u"Вы уже выбирали эти суши")
 
         user_id = self.gen_user_id()
         UserChoices(user_id=user_id, choices=[choice]).save()
